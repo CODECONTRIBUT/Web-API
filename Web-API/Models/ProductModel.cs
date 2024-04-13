@@ -82,5 +82,23 @@ namespace Web_API.Models
                 return null; 
             }
         }
+
+        public Boolean DeleteProduct(int id)
+        {
+            try
+            {
+                var productFromDb = _dbContext.Products.FirstOrDefault(m => m.Id == id);
+                if (productFromDb == null)
+                    return false;
+
+                _dbContext.Products.Remove(productFromDb);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }
