@@ -8,7 +8,7 @@
             _dbContext = dbContext;
         }
 
-        public List<Product> GetAllProducts()
+        public List<Product>? GetAllProducts()
         {
             try
             {
@@ -16,7 +16,7 @@
             }
             catch (Exception ex)
             {             
-                return new List<Product>();
+                return null;
             }
         }
 
@@ -33,6 +33,20 @@
                 return productItem;
             }
             catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public int? CreateProduct(Product product)
+        {
+            try
+            {
+                _dbContext.Products.Add(product);
+                _dbContext.SaveChanges();
+                return product.Id;
+            }
+            catch
             {
                 return null;
             }

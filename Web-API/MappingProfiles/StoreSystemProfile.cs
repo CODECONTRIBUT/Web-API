@@ -18,6 +18,10 @@ namespace Web_API.MappingProfiles
                 .ForMember(dest => dest.Background_Image, opt => opt.MapFrom(src => src.BackgroundImage))
                 .ForMember(dest => dest.Rating_Top, opt => opt.MapFrom(src => src.RatingTop))
                 .ReverseMap();
+            CreateMap<CreateProductRequestDto, Product>()
+                .ForMember(dest => dest.BackgroundImage, opt => opt.MapFrom(src => src.Background_Image))
+                .ForMember(dest => dest.RatingTop, opt => opt.MapFrom(src => src.Rating_Top))
+                .ReverseMap();
             CreateMap<PlatformDto, Platform>().ReverseMap();
             CreateMap<GenreDto, Genre>().ReverseMap();
             CreateMap<StoreDto, Store>().ReverseMap();

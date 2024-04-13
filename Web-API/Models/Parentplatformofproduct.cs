@@ -5,11 +5,9 @@ using System.Collections.Generic;
 
 namespace Web_API.Models;
 
-public partial class Platform
+public partial class Parentplatformofproduct
 {
-    public int Id { get; set; }
+    public int ProductId { get; set; }
 
-    public string Name { get; set; }
-
-    public string Slug { get; set; }
+    public int ParentPlatformId { get; set; }
 }

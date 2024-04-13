@@ -20,6 +20,8 @@ public partial class storeContext : DbContext
 
     public virtual DbSet<Genre> Genres { get; set; }
 
+    public virtual DbSet<Parentplatformofproduct> Parentplatformofproducts { get; set; }
+
     public virtual DbSet<Platform> Platforms { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
@@ -29,10 +31,6 @@ public partial class storeContext : DbContext
     public virtual DbSet<Store> Stores { get; set; }
 
     public virtual DbSet<Trailer> Trailers { get; set; }
-
-//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseMySql("server=127.0.0.1;database=store;uid=root;pwd=root123", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.36-mysql"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -61,11 +59,22 @@ public partial class storeContext : DbContext
                 .IsRequired()
                 .HasMaxLength(100)
                 .HasColumnName("name");
-            entity.Property(e => e.ProductId).HasColumnName("product_id");
             entity.Property(e => e.Slug)
                 .IsRequired()
                 .HasMaxLength(100)
                 .HasColumnName("slug");
+        });
+
+        modelBuilder.Entity<Parentplatformofproduct>(entity =>
+        {
+            entity.HasKey(e => new { e.ProductId, e.ParentPlatformId })
+                .HasName("PRIMARY")
+                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+
+            entity.ToTable("parentplatformofproduct");
+
+            entity.Property(e => e.ProductId).HasColumnName("Product_id");
+            entity.Property(e => e.ParentPlatformId).HasColumnName("Parent_Platform_id");
         });
 
         modelBuilder.Entity<Platform>(entity =>
@@ -79,7 +88,6 @@ public partial class storeContext : DbContext
                 .IsRequired()
                 .HasMaxLength(200)
                 .HasColumnName("name");
-            entity.Property(e => e.ProductId).HasColumnName("product_id");
             entity.Property(e => e.Slug)
                 .IsRequired()
                 .HasMaxLength(200)
@@ -105,7 +113,6 @@ public partial class storeContext : DbContext
                 .IsRequired()
                 .HasMaxLength(100)
                 .HasColumnName("name");
-            entity.Property(e => e.ParentPlatformId).HasColumnName("parent_platform_id");
             entity.Property(e => e.PlatformId).HasColumnName("platform_id");
             entity.Property(e => e.RatingTop).HasColumnName("rating_top");
             entity.Property(e => e.ScreenshotId).HasColumnName("screenshot_id");
@@ -153,7 +160,6 @@ public partial class storeContext : DbContext
                 .IsRequired()
                 .HasMaxLength(200)
                 .HasColumnName("name");
-            entity.Property(e => e.ProductId).HasColumnName("product_id");
             entity.Property(e => e.Slug)
                 .IsRequired()
                 .HasMaxLength(200)

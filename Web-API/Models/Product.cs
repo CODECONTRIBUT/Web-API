@@ -15,8 +15,6 @@ public partial class Product
 
     public string BackgroundImage { get; set; }
 
-    public int? ParentPlatformId { get; set; }
-
     public int? MetaCritic { get; set; }
 
     public int? RatingTop { get; set; }

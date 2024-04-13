@@ -19,6 +19,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "parentplatformofproduct",
+         "ObjectType": 0
+      },
+      {
          "Name": "platforms",
          "ObjectType": 0
       },

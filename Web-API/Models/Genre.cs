@@ -18,6 +18,4 @@ public partial class Genre
     public string ImageBackground { get; set; }
 
     public string Description { get; set; }
-
-    public int? ProductId { get; set; }
 }

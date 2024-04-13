@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Web_API.Dtos.Product;
 using Web_API.Models;
 
@@ -51,6 +49,18 @@ namespace Web_API.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpPost]
+        public IActionResult CreateProduct([FromBody] CreateProductRequestDto createdProductDto)
+        {
+            var product = _mapper.Map<Product>(createdProductDto);
+            if (product == null)
+                return NotFound();
+
+            var productModel = new ProductModel(_dbContext);
+            var productId = productModel.CreateProduct(product);
+            return productId == null ? BadRequest("Create product error") : CreatedAtAction(nameof(GetProduct), new { id = productId }, product);
         }
     }
 
