@@ -1,12 +1,7 @@
-﻿using Web_API.Dtos.Platform;
-using Web_API.Models;
-
-namespace Web_API.Dtos.Product
+﻿namespace Web_API.Dtos.Product
 {
-    public class ProductDto
+    public class UpdateProductRequestDto
     {
-        public int Id { get; set; }
-
         public string Slug { get; set; } = string.Empty;
 
         public string Name { get; set; } = string.Empty;

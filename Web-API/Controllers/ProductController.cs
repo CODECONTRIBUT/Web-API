@@ -60,8 +60,16 @@ namespace Web_API.Controllers
 
             var productModel = new ProductModel(_dbContext);
             var productId = productModel.CreateProduct(product);
-            return productId == null ? BadRequest("Create product error") : CreatedAtAction(nameof(GetProduct), new { id = productId }, product);
+            return productId == null ? BadRequest("Create product error") : CreatedAtAction(nameof(GetProduct), new { id = productId }, _mapper.Map<ProductDto>(product));
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult UpdateProduct([FromRoute] int id, [FromBody] UpdateProductRequestDto updatedProductDto)
+        {
+            var productModel = new ProductModel(_dbContext);
+            var result = productModel.UpdateProduct(id, updatedProductDto);
+            return result == null ? BadRequest("Product not exists or update error") : Ok(_mapper.Map<ProductDto>(result));
         }
     }
-
 }

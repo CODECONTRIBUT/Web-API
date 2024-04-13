@@ -1,4 +1,6 @@
-﻿namespace Web_API.Models
+﻿using Web_API.Dtos.Product;
+
+namespace Web_API.Models
 {
     public class ProductModel
     {
@@ -49,6 +51,35 @@
             catch
             {
                 return null;
+            }
+        }
+
+        public Product? UpdateProduct(int id, UpdateProductRequestDto updatedProductDto)
+        {
+            try
+            {
+                var productFromDb = _dbContext.Products.FirstOrDefault(m => m.Id == id);
+                if (productFromDb == null)
+                    return null;
+
+                productFromDb.Slug = updatedProductDto.Slug;
+                productFromDb.Name = updatedProductDto.Name;
+                productFromDb.MetaCritic = updatedProductDto.MetaCritic;
+                productFromDb.BackgroundImage = updatedProductDto.Background_Image;
+                productFromDb.PlatformId = updatedProductDto.PlatformId;
+                productFromDb.StoreId = updatedProductDto.StoreId;
+                productFromDb.GenreId = updatedProductDto.GenreId;
+                productFromDb.ScreenshotId = updatedProductDto.ScreenshotId;
+                productFromDb.Description = updatedProductDto.Description;
+                productFromDb.RatingTop = updatedProductDto.Rating_Top;
+                productFromDb.TrailerId = updatedProductDto.TrailerId;
+                _dbContext.SaveChanges();
+
+                return productFromDb;
+            }
+            catch(Exception ex)
+            { 
+                return null; 
             }
         }
     }
