@@ -1,4 +1,5 @@
-﻿using Web_API.Dtos.Product;
+﻿using Microsoft.EntityFrameworkCore;
+using Web_API.Dtos.Product;
 
 namespace Web_API.Models
 {
@@ -10,11 +11,11 @@ namespace Web_API.Models
             _dbContext = dbContext;
         }
 
-        public List<Product>? GetAllProducts()
+        public async Task<List<Product>?> GetAllProducts()
         {
             try
             {
-                return _dbContext.Products.ToList();
+                return await _dbContext.Products.ToListAsync();
             }
             catch (Exception ex)
             {             
@@ -22,11 +23,11 @@ namespace Web_API.Models
             }
         }
 
-        public Product? GetProduct(int id)
+        public async Task<Product?> GetProduct(int id)
         {
             try
             {
-                var productItem = _dbContext.Products.Find(id);
+                var productItem = await _dbContext.Products.FindAsync(id);
                 if (productItem == null)
                 {
                     return null;
@@ -40,12 +41,12 @@ namespace Web_API.Models
             }
         }
 
-        public int? CreateProduct(Product product)
+        public async Task<int?> CreateProduct(Product product)
         {
             try
             {
-                _dbContext.Products.Add(product);
-                _dbContext.SaveChanges();
+                await _dbContext.Products.AddAsync(product);
+                await _dbContext.SaveChangesAsync();
                 return product.Id;
             }
             catch
@@ -54,11 +55,11 @@ namespace Web_API.Models
             }
         }
 
-        public Product? UpdateProduct(int id, UpdateProductRequestDto updatedProductDto)
+        public async Task<Product?> UpdateProduct(int id, UpdateProductRequestDto updatedProductDto)
         {
             try
             {
-                var productFromDb = _dbContext.Products.FirstOrDefault(m => m.Id == id);
+                var productFromDb = await _dbContext.Products.FirstOrDefaultAsync(m => m.Id == id);
                 if (productFromDb == null)
                     return null;
 
@@ -73,7 +74,7 @@ namespace Web_API.Models
                 productFromDb.Description = updatedProductDto.Description;
                 productFromDb.RatingTop = updatedProductDto.Rating_Top;
                 productFromDb.TrailerId = updatedProductDto.TrailerId;
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
 
                 return productFromDb;
             }
@@ -83,16 +84,16 @@ namespace Web_API.Models
             }
         }
 
-        public Boolean DeleteProduct(int id)
+        public async Task<Boolean> DeleteProduct(int id)
         {
             try
             {
-                var productFromDb = _dbContext.Products.FirstOrDefault(m => m.Id == id);
+                var productFromDb = await _dbContext.Products.FirstOrDefaultAsync(m => m.Id == id);
                 if (productFromDb == null)
                     return false;
 
                 _dbContext.Products.Remove(productFromDb);
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)

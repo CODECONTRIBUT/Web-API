@@ -7,13 +7,13 @@ namespace Web_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductsController : ControllerBase
     {
         private readonly storeContext _dbContext;
         private readonly IMapper _mapper;
-        private readonly ILogger<ProductController> _logger;
+        private readonly ILogger<ProductsController> _logger;
 
-        public ProductController(storeContext dbContext, IMapper mapper, ILogger<ProductController> logger) 
+        public ProductsController(storeContext dbContext, IMapper mapper, ILogger<ProductsController> logger) 
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -21,12 +21,12 @@ namespace Web_API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetProducts()
+        public async Task<IActionResult> GetProducts()
         {
             try
             {
                 var productModel = new ProductModel(_dbContext);
-                var products = productModel.GetAllProducts();
+                var products = await productModel.GetAllProducts();
                 if (products == null)
                     return NotFound();
 
@@ -41,12 +41,12 @@ namespace Web_API.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetProduct([FromRoute] int id) 
+        public async Task<IActionResult> GetProduct([FromRoute] int id) 
         {
             try
             {
                 var productModel = new ProductModel(_dbContext);
-                var product = productModel.GetProduct(id);
+                var product = await productModel.GetProduct(id);
                 return product == null ? NotFound() : Ok(_mapper.Map<ProductDto>(product));
             }
             catch (Exception ex)
@@ -57,7 +57,7 @@ namespace Web_API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateProduct([FromBody] CreateProductRequestDto createdProductDto)
+        public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequestDto createdProductDto)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace Web_API.Controllers
                     return NotFound();
 
                 var productModel = new ProductModel(_dbContext);
-                var productId = productModel.CreateProduct(product);
+                var productId = await productModel.CreateProduct(product);
                 return productId == null ? BadRequest("Create product error") : CreatedAtAction(nameof(GetProduct), new { id = productId }, _mapper.Map<ProductDto>(product));
             }
             catch (Exception ex)
@@ -78,12 +78,12 @@ namespace Web_API.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult UpdateProduct([FromRoute] int id, [FromBody] UpdateProductRequestDto updatedProductDto)
+        public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] UpdateProductRequestDto updatedProductDto)
         {
             try
             {
                 var productModel = new ProductModel(_dbContext);
-                var result = productModel.UpdateProduct(id, updatedProductDto);
+                var result = await productModel.UpdateProduct(id, updatedProductDto);
                 return result == null ? BadRequest("Product not exists or update error") : Ok(_mapper.Map<ProductDto>(result));
             }
             catch (Exception ex)
@@ -95,12 +95,12 @@ namespace Web_API.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult DeleteProduct([FromRoute] int id)
+        public async Task<IActionResult> DeleteProduct([FromRoute] int id)
         {
             try
             {
                 var productModel = new ProductModel(_dbContext);
-                var isSuccessful = productModel.DeleteProduct(id);
+                var isSuccessful = await productModel.DeleteProduct(id);
                 return isSuccessful ? NoContent() : BadRequest("Product not exists or DB delete error");
             }
             catch (Exception ex)
