@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Web_API.Interfaces;
 using Web_API.MappingProfiles;
 using Web_API.Models;
+using Web_API.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,8 @@ builder.Services.AddDbContext<storeContext>(
     options => options.UseMySql(connStr, ServerVersion.AutoDetect(connStr))); //Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.36-mysql")
 
 builder.Services.AddAutoMapper(typeof(StoreSystemProfile));
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 

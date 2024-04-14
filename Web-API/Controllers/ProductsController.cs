@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Web_API.Dtos.Product;
+using Web_API.Interfaces;
 using Web_API.Models;
+using Web_API.Reposity;
 
 namespace Web_API.Controllers
 {
@@ -12,12 +14,14 @@ namespace Web_API.Controllers
         private readonly storeContext _dbContext;
         private readonly IMapper _mapper;
         private readonly ILogger<ProductsController> _logger;
+        private readonly IProductRepository _entityRepo;
 
-        public ProductsController(storeContext dbContext, IMapper mapper, ILogger<ProductsController> logger) 
+        public ProductsController(storeContext dbContext, IMapper mapper, ILogger<ProductsController> logger, IProductRepository entityRepo) 
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _logger = logger;
+            _entityRepo = entityRepo;
         }
 
         [HttpGet]
@@ -25,8 +29,7 @@ namespace Web_API.Controllers
         {
             try
             {
-                var productModel = new ProductModel(_dbContext);
-                var products = await productModel.GetAllProducts();
+                var products = await _entityRepo.GetAllProductsAsync();
                 if (products == null)
                     return NotFound();
 
@@ -40,13 +43,13 @@ namespace Web_API.Controllers
             }
         }
 
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct([FromRoute] int id) 
         {
             try
             {
-                var productModel = new ProductModel(_dbContext);
-                var product = await productModel.GetProduct(id);
+                var product = await _entityRepo.GetProductByIdAsync(id);
                 return product == null ? NotFound() : Ok(_mapper.Map<ProductDto>(product));
             }
             catch (Exception ex)
@@ -65,9 +68,9 @@ namespace Web_API.Controllers
                 if (product == null)
                     return NotFound();
 
-                var productModel = new ProductModel(_dbContext);
-                var productId = await productModel.CreateProduct(product);
-                return productId == null ? BadRequest("Create product error") : CreatedAtAction(nameof(GetProduct), new { id = productId }, _mapper.Map<ProductDto>(product));
+                var productItem = await _entityRepo.CreateProductAsync(product);
+                return productItem == null ? BadRequest("Create product error") 
+                                           : CreatedAtAction(nameof(GetProduct), new { id = productItem.Id }, _mapper.Map<ProductDto>(productItem));
             }
             catch (Exception ex)
             {
@@ -82,8 +85,7 @@ namespace Web_API.Controllers
         {
             try
             {
-                var productModel = new ProductModel(_dbContext);
-                var result = await productModel.UpdateProduct(id, updatedProductDto);
+                var result = await _entityRepo.UpdateProductAsync(id, updatedProductDto);
                 return result == null ? BadRequest("Product not exists or update error") : Ok(_mapper.Map<ProductDto>(result));
             }
             catch (Exception ex)
@@ -99,9 +101,8 @@ namespace Web_API.Controllers
         {
             try
             {
-                var productModel = new ProductModel(_dbContext);
-                var isSuccessful = await productModel.DeleteProduct(id);
-                return isSuccessful ? NoContent() : BadRequest("Product not exists or DB delete error");
+                var deletedProduct = await _entityRepo.DeleteProductAsync(id);
+                return deletedProduct == null ? BadRequest("Product not exists or DB delete error") : NoContent();
             }
             catch (Exception ex)
             {
