@@ -11,14 +11,12 @@ namespace Web_API.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly storeContext _dbContext;
         private readonly IMapper _mapper;
         private readonly ILogger<ProductsController> _logger;
         private readonly IProductRepository _entityRepo;
 
-        public ProductsController(storeContext dbContext, IMapper mapper, ILogger<ProductsController> logger, IProductRepository entityRepo) 
+        public ProductsController(IMapper mapper, ILogger<ProductsController> logger, IProductRepository entityRepo) 
         {
-            _dbContext = dbContext;
             _mapper = mapper;
             _logger = logger;
             _entityRepo = entityRepo;

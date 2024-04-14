@@ -19,6 +19,7 @@ builder.Services.AddDbContext<storeContext>(
 builder.Services.AddAutoMapper(typeof(StoreSystemProfile));
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 
 var app = builder.Build();
 
