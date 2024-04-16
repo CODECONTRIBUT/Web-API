@@ -12,4 +12,8 @@ public partial class Screenshot
     public int ProductId { get; set; }
 
     public string Image { get; set; }
+
+    public DateTime? CreatedDatetime { get; set; } = DateTime.Now;
+
+    public virtual Product Product { get; set; }
 }

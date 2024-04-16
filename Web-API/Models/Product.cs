@@ -25,9 +25,7 @@ public partial class Product
 
     public int? StoreId { get; set; }
 
-    public int? PlatformId { get; set; }
-
-    public int? ScreenshotId { get; set; }
-
     public int? TrailerId { get; set; }
+
+    public virtual ICollection<Screenshot> Screenshots { get; set; } = new List<Screenshot>();
 }

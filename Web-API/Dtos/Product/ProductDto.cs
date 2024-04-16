@@ -1,4 +1,5 @@
 ﻿using Web_API.Dtos.Platform;
+using Web_API.Dtos.Screenshot;
 using Web_API.Models;
 
 namespace Web_API.Dtos.Product
@@ -13,8 +14,6 @@ namespace Web_API.Dtos.Product
 
         public string Background_Image { get; set; } = string.Empty;
 
-        //public List<PlatformDto> Parent_Platforms { get; set; } = new List<PlatformDto>();
-
         public int? MetaCritic { get; set; }
 
         public int? Rating_Top { get; set; }
@@ -23,12 +22,10 @@ namespace Web_API.Dtos.Product
 
         public int GenreId { get; set; }
 
-        public int? StoreId { get; set; }
-
-        public int? PlatformId { get; set; }
-
-        public int? ScreenshotId { get; set; }
+        public int? StoreId { get; set; }      
 
         public int? TrailerId { get; set; }
+
+        public List<ScreenshotDto> Screenshots { get; set; } = new List<ScreenshotDto>();
     }
 }

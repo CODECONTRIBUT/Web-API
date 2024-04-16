@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Web_API.Dtos.Product;
 using Web_API.Interfaces;
 using Web_API.Models;
-using Web_API.Reposity;
 
 namespace Web_API.Controllers
 {
@@ -30,7 +29,7 @@ namespace Web_API.Controllers
                 var products = await _entityRepo.GetAllProductsAsync();
                 if (products == null)
                     return NotFound();
-
+                
                 var productDtos = _mapper.Map<List<ProductDto>>(products);
                 return Ok(productDtos);
             }

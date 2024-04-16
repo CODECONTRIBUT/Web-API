@@ -113,9 +113,7 @@ public partial class storeContext : DbContext
                 .IsRequired()
                 .HasMaxLength(100)
                 .HasColumnName("name");
-            entity.Property(e => e.PlatformId).HasColumnName("platform_id");
             entity.Property(e => e.RatingTop).HasColumnName("rating_top");
-            entity.Property(e => e.ScreenshotId).HasColumnName("screenshot_id");
             entity.Property(e => e.Slug)
                 .IsRequired()
                 .HasMaxLength(100)
@@ -130,12 +128,22 @@ public partial class storeContext : DbContext
 
             entity.ToTable("screenshots");
 
+            entity.HasIndex(e => e.ProductId, "product_id");
+
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedDatetime)
+                .HasColumnType("datetime")
+                .HasColumnName("created_datetime");
             entity.Property(e => e.Image)
                 .IsRequired()
                 .HasColumnType("text")
                 .HasColumnName("image");
             entity.Property(e => e.ProductId).HasColumnName("product_id");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.Screenshots)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("product_id");
         });
 
         modelBuilder.Entity<Store>(entity =>

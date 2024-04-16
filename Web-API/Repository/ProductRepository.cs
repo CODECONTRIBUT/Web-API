@@ -26,6 +26,8 @@ namespace Web_API.Repository
             if (existingProduct == null)
                 return null;
 
+            var screenshots = await _dbContext.Screenshots.Where(s => s.Id == id).ToListAsync();
+            _dbContext.Screenshots.RemoveRange(screenshots);
             _dbContext.Products.Remove(existingProduct);
             await _dbContext.SaveChangesAsync();
             return existingProduct;
@@ -33,12 +35,12 @@ namespace Web_API.Repository
 
         public async Task<List<Product>> GetAllProductsAsync()
         {
-            return await _dbContext.Products.ToListAsync();
+            return await _dbContext.Products.Include(p => p.Screenshots).ToListAsync();
         }
 
         public async Task<Product?> GetProductByIdAsync(int id)
         {
-            var productItem = await _dbContext.Products.FindAsync(id);
+            var productItem = await _dbContext.Products.Include(p => p.Screenshots).FirstOrDefaultAsync(p => p.Id == id);
             if (productItem == null)
                 return null;
 
@@ -55,10 +57,8 @@ namespace Web_API.Repository
             existingProduct.Name = updatedProductDto.Name;
             existingProduct.MetaCritic = updatedProductDto.MetaCritic;
             existingProduct.BackgroundImage = updatedProductDto.Background_Image;
-            existingProduct.PlatformId = updatedProductDto.PlatformId;
             existingProduct.StoreId = updatedProductDto.StoreId;
             existingProduct.GenreId = updatedProductDto.GenreId;
-            existingProduct.ScreenshotId = updatedProductDto.ScreenshotId;
             existingProduct.Description = updatedProductDto.Description;
             existingProduct.RatingTop = updatedProductDto.Rating_Top;
             existingProduct.TrailerId = updatedProductDto.TrailerId;
