@@ -13,7 +13,7 @@ public partial class Screenshot
 
     public string Image { get; set; }
 
-    public DateTime? CreatedDatetime { get; set; } = DateTime.Now;
+    public DateTime? CreatedDatetime { get; set; }
 
     public virtual Product Product { get; set; }
 }

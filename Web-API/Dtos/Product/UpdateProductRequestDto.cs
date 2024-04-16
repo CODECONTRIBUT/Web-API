@@ -8,8 +8,6 @@
 
         public string Background_Image { get; set; } = string.Empty;
 
-        //public List<PlatformDto> Parent_Platforms { get; set; } = new List<PlatformDto>();
-
         public int? MetaCritic { get; set; }
 
         public int? Rating_Top { get; set; }
@@ -20,10 +18,7 @@
 
         public int? StoreId { get; set; }
 
-        public int? PlatformId { get; set; }
-
-        public int? ScreenshotId { get; set; }
-
         public int? TrailerId { get; set; }
+
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Web_API.Dtos.Product
+﻿using Web_API.Dtos.Screenshot;
+
+namespace Web_API.Dtos.Product
 {
     public class CreateProductRequestDto
     {
@@ -7,8 +9,6 @@
         public string Name { get; set; } = string.Empty;
 
         public string Background_Image { get; set; } = string.Empty;
-
-        //public List<PlatformDto> Parent_Platforms { get; set; } = new List<PlatformDto>();
 
         public int? MetaCritic { get; set; }
 
@@ -20,10 +20,8 @@
 
         public int? StoreId { get; set; }
 
-        public int? PlatformId { get; set; }
-
-        public int? ScreenshotId { get; set; }
-
         public int? TrailerId { get; set; }
+
+        public List<CreateScreenshotDto> Screenshots { get; set; }
     }
 }

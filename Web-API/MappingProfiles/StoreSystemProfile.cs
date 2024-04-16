@@ -26,6 +26,7 @@ namespace Web_API.MappingProfiles
             CreateMap<GenreDto, Genre>().ReverseMap();
             CreateMap<StoreDto, Store>().ReverseMap();
             CreateMap<ScreenshotDto, Screenshot>().ReverseMap();
+            CreateMap<CreateScreenshotDto, Screenshot>().ReverseMap();
             CreateMap<TrailerDto, Trailer>().ReverseMap();
         }
     }

@@ -6,8 +6,8 @@
 
         public int ProductId { get; set; }
 
-        public string Image { get; set; } = string.Empty;
+        public string Image { get; set; }
 
-        public DateTime? CreatedDatetime { get; set; } = DateTime.Now;
+        public DateTime? CreatedDatetime { get; set; }
     }
 }

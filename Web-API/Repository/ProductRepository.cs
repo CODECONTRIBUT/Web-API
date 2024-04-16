@@ -26,7 +26,7 @@ namespace Web_API.Repository
             if (existingProduct == null)
                 return null;
 
-            var screenshots = await _dbContext.Screenshots.Where(s => s.Id == id).ToListAsync();
+            var screenshots = await _dbContext.Screenshots.Where(s => s.ProductId == id).ToListAsync();
             _dbContext.Screenshots.RemoveRange(screenshots);
             _dbContext.Products.Remove(existingProduct);
             await _dbContext.SaveChangesAsync();
@@ -41,9 +41,6 @@ namespace Web_API.Repository
         public async Task<Product?> GetProductByIdAsync(int id)
         {
             var productItem = await _dbContext.Products.Include(p => p.Screenshots).FirstOrDefaultAsync(p => p.Id == id);
-            if (productItem == null)
-                return null;
-
             return productItem;
         }
 
