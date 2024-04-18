@@ -9,5 +9,9 @@
         public string? search { get; set; } = null;
 
         public string? ordering { get; set; }
+
+        public int page { get; set; } = 1;
+
+        public int page_size { get; set; } = 12;
     }
 }

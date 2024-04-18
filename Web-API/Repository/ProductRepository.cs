@@ -93,7 +93,9 @@ namespace Web_API.Repository
                 }
             }
 
-            return await products.ToListAsync();
+            var skipNumber = (queryObj.page - 1) * queryObj.page_size;
+
+            return await products.Skip(skipNumber).Take(queryObj.page_size).ToListAsync();
         }
 
         public async Task<Product?> GetProductByIdAsync(int id)
