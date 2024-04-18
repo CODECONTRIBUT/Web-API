@@ -26,6 +26,9 @@ namespace Web_API.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var genres = await _genreRepo.GetAllGenreAsync();
                 return Ok(_mapper.Map<List<GenreDto>>(genres));
             }
@@ -36,11 +39,14 @@ namespace Web_API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetGenre([FromRoute] int id)
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var genre = await _genreRepo.GetGenreByIdAsync(id);
                 return genre == null ? NotFound() : Ok(_mapper.Map<GenreDto>(genre));
             }
@@ -56,6 +62,9 @@ namespace Web_API.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var createdGenre = _mapper.Map<Genre>(createdGenreDto);
                 if (createdGenre == null)
                     return BadRequest();
@@ -71,11 +80,14 @@ namespace Web_API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateGenre([FromRoute] int id, [FromBody] UpdateGenreDto updatedGenreDto)
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var updatedGenre = await _genreRepo.UpdateGenreAsync(id, updatedGenreDto);
                 return updatedGenre == null ? NotFound() : Ok(_mapper.Map<GenreDto>(updatedGenre));
             }
@@ -86,11 +98,14 @@ namespace Web_API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteGenre([FromRoute] int id)
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var deletedGenre = await _genreRepo.DeleteGenreAsync(id);
                 return deletedGenre == null ? NotFound() : NoContent();
             }

@@ -21,11 +21,14 @@ namespace Web_API.Controllers
             _screenshotRepo = screenshotRepo;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetScreenshot([FromRoute] int id)
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var screenshot = await _screenshotRepo.GetScreenshotByIdAsync(id);
                 return screenshot == null ? NotFound() : Ok(_mapper.Map<ScreenshotDto>(screenshot));
             }
@@ -39,11 +42,14 @@ namespace Web_API.Controllers
 
         //on existing Product webpage, upload or delete a screenshot would trigger these two endpoints below.
         //Otherwise, when create or delete a product, the logic of creation/deletion of screenshots is in ProductsController endpoints.
-        [HttpPost("{productId}")]
+        [HttpPost("{productId:int}")]
         public async Task<IActionResult> CreateScreenshot([FromRoute] int productId, [FromBody] CreateScreenshotDto createdScreenshotDto)
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var screenshot = _mapper.Map<Screenshot>(createdScreenshotDto);
                 if (screenshot == null)
                     return NotFound();
@@ -59,11 +65,14 @@ namespace Web_API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteScreenshot([FromRoute] int id)
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var deletedScreenshot = await _screenshotRepo.DeleteScreenshotAsync(id);
                 return deletedScreenshot == null ? BadRequest("Screenshot not exists or DB delete error") : NoContent();
             }

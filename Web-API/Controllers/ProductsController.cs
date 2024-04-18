@@ -26,6 +26,9 @@ namespace Web_API.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var products = await _entityRepo.GetAllProductsAsync();
                 if (products == null)
                     return NotFound();
@@ -41,11 +44,14 @@ namespace Web_API.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetProduct([FromRoute] int id) 
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var product = await _entityRepo.GetProductByIdAsync(id);
                 return product == null ? NotFound() : Ok(_mapper.Map<ProductDto>(product));
             }
@@ -61,6 +67,9 @@ namespace Web_API.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var product = _mapper.Map<Product>(createdProductDto);
                 if (product == null)
                     return NotFound();
@@ -77,11 +86,14 @@ namespace Web_API.Controllers
         }
 
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] UpdateProductRequestDto updatedProductDto)
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var result = await _entityRepo.UpdateProductAsync(id, updatedProductDto);
                 return result == null ? BadRequest("Product not exists or update error") : Ok(_mapper.Map<ProductDto>(result));
             }
@@ -93,11 +105,14 @@ namespace Web_API.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> DeleteProduct([FromRoute] int id)
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var deletedProduct = await _entityRepo.DeleteProductAsync(id);
                 return deletedProduct == null ? BadRequest("Product not exists or DB delete error") : NoContent();
             }
