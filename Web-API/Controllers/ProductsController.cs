@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Web_API.Dtos.Product;
+using Web_API.Helpers;
 using Web_API.Interfaces;
 using Web_API.Models;
 
@@ -22,14 +23,14 @@ namespace Web_API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts()
+        public async Task<IActionResult> GetProducts([FromQuery] QueryObject queryObj)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var products = await _entityRepo.GetAllProductsAsync();
+                var products = await _entityRepo.GetAllProductsAsync(queryObj);
                 if (products == null)
                     return NotFound();
                 

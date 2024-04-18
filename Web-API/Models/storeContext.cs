@@ -24,6 +24,8 @@ public partial class storeContext : DbContext
 
     public virtual DbSet<Platform> Platforms { get; set; }
 
+    public virtual DbSet<Platformofproduct> Platformofproducts { get; set; }
+
     public virtual DbSet<Product> Products { get; set; }
 
     public virtual DbSet<Screenshot> Screenshots { get; set; }
@@ -31,7 +33,6 @@ public partial class storeContext : DbContext
     public virtual DbSet<Store> Stores { get; set; }
 
     public virtual DbSet<Trailer> Trailers { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -92,6 +93,18 @@ public partial class storeContext : DbContext
                 .IsRequired()
                 .HasMaxLength(200)
                 .HasColumnName("slug");
+        });
+
+        modelBuilder.Entity<Platformofproduct>(entity =>
+        {
+            entity.HasKey(e => new { e.ProductId, e.PlatformId })
+                .HasName("PRIMARY")
+                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+
+            entity.ToTable("platformofproduct");
+
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
+            entity.Property(e => e.PlatformId).HasColumnName("platform_id");
         });
 
         modelBuilder.Entity<Product>(entity =>

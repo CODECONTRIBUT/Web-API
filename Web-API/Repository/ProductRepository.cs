@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Web_API.Dtos.Product;
+using Web_API.Helpers;
 using Web_API.Interfaces;
 using Web_API.Models;
 
@@ -33,9 +34,30 @@ namespace Web_API.Repository
             return existingProduct;
         }
 
-        public async Task<List<Product>> GetAllProductsAsync()
+        public async Task<List<Product>> GetAllProductsAsync(QueryObject queryObj)
         {
-            return await _dbContext.Products.Include(p => p.Screenshots).ToListAsync();
+
+            var products = _dbContext.Products.Include(p => p.Screenshots).AsQueryable();
+
+            //if search string exists, get all products with search string only
+            if (!string.IsNullOrEmpty(queryObj.search) && !string.IsNullOrWhiteSpace(queryObj.search))
+            {
+                products = products.Where(p => p.Name.Contains(queryObj.search));
+                return await products.ToListAsync();
+            }
+
+            if (queryObj.genres != null)
+                products = products.Where(p => p.GenreId == queryObj.genres);
+
+            if (queryObj.platforms != null)
+                products = (from Products in products
+                           join Platformofproducts in _dbContext.Platformofproducts
+                           on Products.Id equals Platformofproducts.ProductId into pgroup
+                           from Platformofproducts in pgroup.DefaultIfEmpty()
+                           where Platformofproducts.PlatformId == queryObj.platforms
+                           select Products).Distinct().OrderBy(s => s.Id);
+
+            return await products.ToListAsync();
         }
 
         public async Task<Product?> GetProductByIdAsync(int id)

@@ -23,6 +23,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "platformofproduct",
+         "ObjectType": 0
+      },
+      {
          "Name": "platforms",
          "ObjectType": 0
       },
