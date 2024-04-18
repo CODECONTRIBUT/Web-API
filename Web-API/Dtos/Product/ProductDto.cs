@@ -26,6 +26,10 @@ namespace Web_API.Dtos.Product
 
         public int? TrailerId { get; set; }
 
+        public DateTime? CreatedDatetime { get; set; }
+
+        public DateTime? ReleasedDatetime { get; set; }
+
         public List<ScreenshotDto> Screenshots { get; set; } = new List<ScreenshotDto>();
     }
 }

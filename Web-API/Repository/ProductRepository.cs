@@ -42,7 +42,7 @@ namespace Web_API.Repository
             //if search string exists, get all products with search string only
             if (!string.IsNullOrEmpty(queryObj.search) && !string.IsNullOrWhiteSpace(queryObj.search))
             {
-                products = products.Where(p => p.Name.Contains(queryObj.search));
+                products = products.Where(p => p.Name.Contains(queryObj.search)).Distinct().OrderBy(p => p.Id);
                 return await products.ToListAsync();
             }
 
@@ -55,7 +55,43 @@ namespace Web_API.Repository
                            on Products.Id equals Platformofproducts.ProductId into pgroup
                            from Platformofproducts in pgroup.DefaultIfEmpty()
                            where Platformofproducts.PlatformId == queryObj.platforms
-                           select Products).Distinct().OrderBy(s => s.Id);
+                           select Products).Distinct();
+
+            products = products.OrderBy(p => p.Id);
+
+            if (!string.IsNullOrEmpty(queryObj.ordering) && !string.IsNullOrWhiteSpace(queryObj.ordering))
+            {
+                switch (queryObj.ordering)
+                {
+                    case "-added":
+                        {
+                            products = products.OrderByDescending(p => p.CreatedDatetime);
+                            break;
+                        }
+                    case "name":
+                        {
+                            products = products.OrderBy(p => p.Name);
+                            break;
+                        }
+                    case "-released":
+                        {
+                            products = products.OrderByDescending(p => p.ReleasedDatetime);
+                            break;
+                        }                      
+                    case "-metacritic":
+                        {
+                            products = products.OrderByDescending(p => p.MetaCritic);
+                            break;
+                        }
+                    case "-rating":
+                        {
+                            products = products.OrderByDescending(p => p.RatingTop);
+                            break;
+                        }
+                    default:
+                        break;
+                }
+            }
 
             return await products.ToListAsync();
         }
@@ -81,6 +117,7 @@ namespace Web_API.Repository
             existingProduct.Description = updatedProductDto.Description;
             existingProduct.RatingTop = updatedProductDto.Rating_Top;
             existingProduct.TrailerId = updatedProductDto.TrailerId;
+            existingProduct.ReleasedDatetime = updatedProductDto.ReleasedDatetime;
             await _dbContext.SaveChangesAsync();
             return existingProduct;
         }

@@ -27,5 +27,9 @@ public partial class Product
 
     public int? TrailerId { get; set; }
 
+    public DateTime? CreatedDatetime { get; set; }
+
+    public DateTime? ReleasedDatetime { get; set; }
+
     public virtual ICollection<Screenshot> Screenshots { get; set; } = new List<Screenshot>();
 }

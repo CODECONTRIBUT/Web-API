@@ -33,6 +33,7 @@ public partial class storeContext : DbContext
     public virtual DbSet<Store> Stores { get; set; }
 
     public virtual DbSet<Trailer> Trailers { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -117,6 +118,9 @@ public partial class storeContext : DbContext
             entity.Property(e => e.BackgroundImage)
                 .HasColumnType("text")
                 .HasColumnName("background_image");
+            entity.Property(e => e.CreatedDatetime)
+                .HasColumnType("datetime")
+                .HasColumnName("created_datetime");
             entity.Property(e => e.Description)
                 .HasColumnType("text")
                 .HasColumnName("description");
@@ -127,6 +131,9 @@ public partial class storeContext : DbContext
                 .HasMaxLength(100)
                 .HasColumnName("name");
             entity.Property(e => e.RatingTop).HasColumnName("rating_top");
+            entity.Property(e => e.ReleasedDatetime)
+                .HasColumnType("datetime")
+                .HasColumnName("released_datetime");
             entity.Property(e => e.Slug)
                 .IsRequired()
                 .HasMaxLength(100)

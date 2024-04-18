@@ -26,5 +26,7 @@ namespace Web_API.Dtos.Product
 
         public int? TrailerId { get; set; }
 
+        public DateTime? ReleasedDatetime { get; set; }
+
     }
 }

@@ -7,5 +7,7 @@
         public int? platforms { get; set; } = null;
 
         public string? search { get; set; } = null;
+
+        public string? ordering { get; set; }
     }
 }
