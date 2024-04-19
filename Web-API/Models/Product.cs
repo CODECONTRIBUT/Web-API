@@ -32,4 +32,8 @@ public partial class Product
     public DateTime? ReleasedDatetime { get; set; }
 
     public virtual ICollection<Screenshot> Screenshots { get; set; } = new List<Screenshot>();
+
+    public virtual ICollection<Platform> ParentPlatforms { get; set; } = new List<Platform>();
+
+    public virtual ICollection<Platform> Platforms { get; set; } = new List<Platform>();
 }

@@ -20,11 +20,7 @@ public partial class storeContext : DbContext
 
     public virtual DbSet<Genre> Genres { get; set; }
 
-    public virtual DbSet<Parentplatformofproduct> Parentplatformofproducts { get; set; }
-
     public virtual DbSet<Platform> Platforms { get; set; }
-
-    public virtual DbSet<Platformofproduct> Platformofproducts { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
 
@@ -67,18 +63,6 @@ public partial class storeContext : DbContext
                 .HasColumnName("slug");
         });
 
-        modelBuilder.Entity<Parentplatformofproduct>(entity =>
-        {
-            entity.HasKey(e => new { e.ProductId, e.ParentPlatformId })
-                .HasName("PRIMARY")
-                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
-
-            entity.ToTable("parentplatformofproduct");
-
-            entity.Property(e => e.ProductId).HasColumnName("Product_id");
-            entity.Property(e => e.ParentPlatformId).HasColumnName("Parent_Platform_id");
-        });
-
         modelBuilder.Entity<Platform>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -94,18 +78,6 @@ public partial class storeContext : DbContext
                 .IsRequired()
                 .HasMaxLength(200)
                 .HasColumnName("slug");
-        });
-
-        modelBuilder.Entity<Platformofproduct>(entity =>
-        {
-            entity.HasKey(e => new { e.ProductId, e.PlatformId })
-                .HasName("PRIMARY")
-                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
-
-            entity.ToTable("platformofproduct");
-
-            entity.Property(e => e.ProductId).HasColumnName("product_id");
-            entity.Property(e => e.PlatformId).HasColumnName("platform_id");
         });
 
         modelBuilder.Entity<Product>(entity =>
@@ -140,6 +112,50 @@ public partial class storeContext : DbContext
                 .HasColumnName("slug");
             entity.Property(e => e.StoreId).HasColumnName("store_id");
             entity.Property(e => e.TrailerId).HasColumnName("trailer_id");
+
+            entity.HasMany(d => d.ParentPlatforms).WithMany(p => p.Products)
+                .UsingEntity<Dictionary<string, object>>(
+                    "Parentplatformofproduct",
+                    r => r.HasOne<Platform>().WithMany()
+                        .HasForeignKey("ParentPlatformId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK2-parent-platform-2"),
+                    l => l.HasOne<Product>().WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK1-product-id-2"),
+                    j =>
+                    {
+                        j.HasKey("ProductId", "ParentPlatformId")
+                            .HasName("PRIMARY")
+                            .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        j.ToTable("parentplatformofproduct");
+                        j.HasIndex(new[] { "ParentPlatformId" }, "FK2-parent-platform-2");
+                        j.IndexerProperty<int>("ProductId").HasColumnName("Product_id");
+                        j.IndexerProperty<int>("ParentPlatformId").HasColumnName("Parent_Platform_id");
+                    });
+
+            entity.HasMany(d => d.Platforms).WithMany(p => p.ProductsNavigation)
+                .UsingEntity<Dictionary<string, object>>(
+                    "Platformofproduct",
+                    r => r.HasOne<Platform>().WithMany()
+                        .HasForeignKey("PlatformId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK2-platform-id-1"),
+                    l => l.HasOne<Product>().WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK1-product-id-1"),
+                    j =>
+                    {
+                        j.HasKey("ProductId", "PlatformId")
+                            .HasName("PRIMARY")
+                            .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        j.ToTable("platformofproduct");
+                        j.HasIndex(new[] { "PlatformId" }, "FK2-platform-id-1");
+                        j.IndexerProperty<int>("ProductId").HasColumnName("product_id");
+                        j.IndexerProperty<int>("PlatformId").HasColumnName("platform_id");
+                    });
         });
 
         modelBuilder.Entity<Screenshot>(entity =>

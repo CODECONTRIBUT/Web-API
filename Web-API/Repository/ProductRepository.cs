@@ -36,8 +36,8 @@ namespace Web_API.Repository
 
         public async Task<List<Product>> GetAllProductsAsync(QueryObject queryObj)
         {
-
-            var products = _dbContext.Products.Include(p => p.Screenshots).AsQueryable();
+            var products = _dbContext.Products.Include(p => p.Screenshots)
+                                              .Include(p => p.Platforms).Include(p => p.ParentPlatforms).AsQueryable();
 
             //if search string exists, get all products with search string only
             if (!string.IsNullOrEmpty(queryObj.search) && !string.IsNullOrWhiteSpace(queryObj.search))
@@ -50,12 +50,7 @@ namespace Web_API.Repository
                 products = products.Where(p => p.GenreId == queryObj.genres);
 
             if (queryObj.platforms != null)
-                products = (from Products in products
-                           join Platformofproducts in _dbContext.Platformofproducts
-                           on Products.Id equals Platformofproducts.ProductId into pgroup
-                           from Platformofproducts in pgroup.DefaultIfEmpty()
-                           where Platformofproducts.PlatformId == queryObj.platforms
-                           select Products).Distinct();
+                products = products.Where(p => p.Platforms.Any(s => s.Id == queryObj.platforms));
 
             products = products.OrderBy(p => p.Id);
 

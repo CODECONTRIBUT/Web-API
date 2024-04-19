@@ -31,5 +31,9 @@ namespace Web_API.Dtos.Product
         public DateTime? ReleasedDatetime { get; set; }
 
         public List<ScreenshotDto> Screenshots { get; set; } = new List<ScreenshotDto>();
+
+        public List<PlatformDto> ParentPlatforms { get; set; } = new List<PlatformDto>();
+
+        public List<PlatformDto> Platforms { get; set; } = new List<PlatformDto>();
     }
 }
