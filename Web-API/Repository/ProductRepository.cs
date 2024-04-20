@@ -14,8 +14,34 @@ namespace Web_API.Repository
             _dbContext = dbContext;
         }
 
-        public async Task<Product> CreateProductAsync(Product product)
+        public async Task<Product?> CreateProductAsync(Product product)
         {
+            //When create a new product with a reference of existing platforms and parent platforms,
+            //attach relationships and let EF know that rathen than handle as new platforms and parent platforms.
+            var existingPlatformList = new List<Platform>();
+            var platformList= product.Platforms.ToList();
+            foreach(var platform in platformList)
+            {
+                var existingPlatform = _dbContext.Platforms.Find(platform.Id);
+                if (existingPlatform == null)
+                    return null;
+
+                existingPlatformList.Add(existingPlatform);
+            }
+            product.Platforms = existingPlatformList;
+
+            var parentPlatformList = product.ParentPlatforms.ToList();
+            var existingParentPlatformList = new List<Platform>();
+            foreach (var platform in parentPlatformList)
+            {
+                var existingParentPlatform = _dbContext.Platforms.Find(platform.Id);
+                if (existingParentPlatform == null)
+                    return null;
+
+                existingParentPlatformList.Add(existingParentPlatform);
+            }
+            product.ParentPlatforms = existingParentPlatformList;
+
             await _dbContext.Products.AddAsync(product);
             await _dbContext.SaveChangesAsync();
             return product;
@@ -95,7 +121,7 @@ namespace Web_API.Repository
 
         public async Task<Product?> GetProductByIdAsync(int id)
         {
-            var productItem = await _dbContext.Products.Include(p => p.Screenshots).FirstOrDefaultAsync(p => p.Id == id);
+            var productItem = await _dbContext.Products.Include(p => p.Screenshots).Include(p => p.Platforms).Include(p => p.ParentPlatforms).FirstOrDefaultAsync(p => p.Id == id);
             return productItem;
         }
 
