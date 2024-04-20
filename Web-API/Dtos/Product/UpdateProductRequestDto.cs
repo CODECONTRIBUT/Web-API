@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Web_API.Dtos.Platform;
+using Web_API.Dtos.Screenshot;
 
 namespace Web_API.Dtos.Product
 {
@@ -27,6 +29,12 @@ namespace Web_API.Dtos.Product
         public int? TrailerId { get; set; }
 
         public DateTime? ReleasedDatetime { get; set; }
+
+        public List<ScreenshotDto> Screenshots { get; set; }
+
+        public List<PlatformDto> ParentPlatforms { get; set; } = new List<PlatformDto>();
+
+        public List<PlatformDto> Platforms { get; set; } = new List<PlatformDto>();
 
     }
 }

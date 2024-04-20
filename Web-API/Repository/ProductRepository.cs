@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Web_API.Dtos.Product;
 using Web_API.Helpers;
 using Web_API.Interfaces;
@@ -18,29 +19,8 @@ namespace Web_API.Repository
         {
             //When create a new product with a reference of existing platforms and parent platforms,
             //attach relationships and let EF know that rathen than handle as new platforms and parent platforms.
-            var existingPlatformList = new List<Platform>();
-            var platformList= product.Platforms.ToList();
-            foreach(var platform in platformList)
-            {
-                var existingPlatform = _dbContext.Platforms.Find(platform.Id);
-                if (existingPlatform == null)
-                    return null;
-
-                existingPlatformList.Add(existingPlatform);
-            }
-            product.Platforms = existingPlatformList;
-
-            var parentPlatformList = product.ParentPlatforms.ToList();
-            var existingParentPlatformList = new List<Platform>();
-            foreach (var platform in parentPlatformList)
-            {
-                var existingParentPlatform = _dbContext.Platforms.Find(platform.Id);
-                if (existingParentPlatform == null)
-                    return null;
-
-                existingParentPlatformList.Add(existingParentPlatform);
-            }
-            product.ParentPlatforms = existingParentPlatformList;
+            product.Platforms = GetPlatformsFromDb(product.Platforms.ToList());
+            product.ParentPlatforms = GetPlatformsFromDb(product.ParentPlatforms.ToList());
 
             await _dbContext.Products.AddAsync(product);
             await _dbContext.SaveChangesAsync();
@@ -49,12 +29,11 @@ namespace Web_API.Repository
 
         public async Task<Product?> DeleteProductAsync(int id)
         {
-            var existingProduct = await _dbContext.Products.FirstOrDefaultAsync(m => m.Id == id);
+            var existingProduct = await _dbContext.Products.Include(p => p.Screenshots)
+                                            .Include(p => p.Platforms).Include(p => p.ParentPlatforms).FirstOrDefaultAsync(m => m.Id == id);
             if (existingProduct == null)
                 return null;
 
-            var screenshots = await _dbContext.Screenshots.Where(s => s.ProductId == id).ToListAsync();
-            _dbContext.Screenshots.RemoveRange(screenshots);
             _dbContext.Products.Remove(existingProduct);
             await _dbContext.SaveChangesAsync();
             return existingProduct;
@@ -121,15 +100,20 @@ namespace Web_API.Repository
 
         public async Task<Product?> GetProductByIdAsync(int id)
         {
-            var productItem = await _dbContext.Products.Include(p => p.Screenshots).Include(p => p.Platforms).Include(p => p.ParentPlatforms).FirstOrDefaultAsync(p => p.Id == id);
+            var productItem = await _dbContext.Products.Include(p => p.Screenshots)
+                                                        .Include(p => p.Platforms).Include(p => p.ParentPlatforms).FirstOrDefaultAsync(p => p.Id == id);
             return productItem;
         }
 
-        public async Task<Product?> UpdateProductAsync(int id, UpdateProductRequestDto updatedProductDto)
+        public async Task<Product?> UpdateProductAsync(int id, UpdateProductRequestDto updatedProductDto, IMapper _mapper)
         {
-            var existingProduct = await _dbContext.Products.FirstOrDefaultAsync(m => m.Id == id);
+            var existingProduct = await _dbContext.Products.Include(p => p.Screenshots).Include(p => p.Platforms)
+                                                            .Include(p => p.ParentPlatforms).FirstOrDefaultAsync(m => m.Id == id);
             if (existingProduct == null)
                 return null;
+
+            existingProduct.Platforms.Clear();
+            existingProduct.ParentPlatforms.Clear();
 
             existingProduct.Slug = updatedProductDto.Slug;
             existingProduct.Name = updatedProductDto.Name;
@@ -141,8 +125,52 @@ namespace Web_API.Repository
             existingProduct.RatingTop = updatedProductDto.Rating_Top;
             existingProduct.TrailerId = updatedProductDto.TrailerId;
             existingProduct.ReleasedDatetime = updatedProductDto.ReleasedDatetime;
+
+            var updatedScreenshots = _mapper.Map<List<Screenshot>>(updatedProductDto.Screenshots);
+            if (!CheckSameScreenshotList(existingProduct.Screenshots.ToList(), updatedScreenshots))
+                existingProduct.Screenshots = updatedScreenshots;  
+
+            existingProduct.Platforms = GetPlatformsFromDb(_mapper.Map<List<Platform>>(updatedProductDto.Platforms));
+            existingProduct.ParentPlatforms = GetPlatformsFromDb(_mapper.Map<List<Platform>>(updatedProductDto.ParentPlatforms));
+
             await _dbContext.SaveChangesAsync();
             return existingProduct;
+        }
+
+        private List<Platform>? GetPlatformsFromDb(List<Platform> platforms)
+        {
+            var existingPlatformList = new List<Platform>();
+            foreach (var platform in platforms)
+            {
+                var existingPlatform = _dbContext.Platforms.Find(platform.Id);
+                if (existingPlatform == null)
+                    return null;
+
+                existingPlatformList.Add(existingPlatform);
+            }
+            return existingPlatformList;
+        }
+
+        private bool CheckSameScreenshotList(List<Screenshot> existingScr,  List<Screenshot> updatedScr)
+        {
+            if (updatedScr == null && existingScr == null) return true;
+
+            if (updatedScr != null && existingScr != null && updatedScr.Count == existingScr.Count)
+            {
+                var updatedIds = new List<int>();
+                foreach(var screenshot in updatedScr)
+                {
+                    updatedIds.Add(screenshot.Id);
+                }
+
+                foreach (var screenshot in existingScr)
+                {
+                    if (!updatedIds.Contains(screenshot.Id)) 
+                        return false;
+                }
+                return true;
+            }
+            return false;
         }
     }
 }

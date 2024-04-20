@@ -122,7 +122,6 @@ public partial class storeContext : DbContext
                         .HasConstraintName("FK2-parent-platform-2"),
                     l => l.HasOne<Product>().WithMany()
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("FK1-product-id-2"),
                     j =>
                     {
@@ -144,7 +143,6 @@ public partial class storeContext : DbContext
                         .HasConstraintName("FK2-platform-id-1"),
                     l => l.HasOne<Product>().WithMany()
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("FK1-product-id-1"),
                     j =>
                     {
@@ -178,7 +176,6 @@ public partial class storeContext : DbContext
 
             entity.HasOne(d => d.Product).WithMany(p => p.Screenshots)
                 .HasForeignKey(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("product_id");
         });
 

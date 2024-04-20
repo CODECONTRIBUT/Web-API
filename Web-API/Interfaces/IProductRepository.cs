@@ -1,4 +1,5 @@
-﻿using Web_API.Dtos.Product;
+﻿using AutoMapper;
+using Web_API.Dtos.Product;
 using Web_API.Helpers;
 using Web_API.Models;
 
@@ -12,7 +13,7 @@ namespace Web_API.Interfaces
 
         Task<Product?> CreateProductAsync(Product product);
 
-        Task<Product?> UpdateProductAsync(int id, UpdateProductRequestDto productDto);
+        Task<Product?> UpdateProductAsync(int id, UpdateProductRequestDto productDto, IMapper _mapper);
 
         Task<Product?> DeleteProductAsync(int id);
     }

@@ -95,7 +95,7 @@ namespace Web_API.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var result = await _entityRepo.UpdateProductAsync(id, updatedProductDto);
+                var result = await _entityRepo.UpdateProductAsync(id, updatedProductDto, _mapper);
                 return result == null ? BadRequest("Product not exists or update error") : Ok(_mapper.Map<ProductDto>(result));
             }
             catch (Exception ex)
