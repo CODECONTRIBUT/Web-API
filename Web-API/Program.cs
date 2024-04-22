@@ -26,6 +26,7 @@ builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<IScreenshotRepository, ScreenshotRepository>();
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<ITrailerRepository, TrailerRepository>();
+builder.Services.AddScoped<IParentPlatformRepository, ParentPlatformRepository>();
 
 var app = builder.Build();
 
