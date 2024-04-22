@@ -24,6 +24,7 @@ builder.Services.AddAutoMapper(typeof(StoreSystemProfile));
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<IScreenshotRepository, ScreenshotRepository>();
+builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 
 var app = builder.Build();
 
