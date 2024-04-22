@@ -11,7 +11,7 @@ namespace Web_API.Controllers
     public class StoresController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly ILogger _logger;
+        private readonly ILogger<StoresController> _logger;
         private readonly IStoreRepository _storeRepo;
         public StoresController(IMapper mapper, ILogger<StoresController> logger, IStoreRepository storeRepo)
         {
