@@ -19,6 +19,20 @@ var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<storeContext>(
     options => options.UseMySql(connStr, ServerVersion.AutoDetect(connStr))); //Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.36-mysql")
 
+builder.Services.AddCors(options =>
+{
+    //React app
+    options.AddPolicy("ReactApp", policybuilder =>
+    {
+        policybuilder.WithOrigins("http://localhost:5173");
+        policybuilder.AllowAnyHeader();
+        policybuilder.AllowAnyMethod();
+        policybuilder.AllowCredentials();
+    });
+
+    //React Native app next
+});
+
 builder.Services.AddAutoMapper(typeof(StoreSystemProfile));
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -36,6 +50,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("ReactApp");
 
 app.UseHttpsRedirection();
 

@@ -5,7 +5,7 @@ using Web_API.Interfaces;
 
 namespace Web_API.Controllers
 {
-    [Route("api/platforms/lists/parents")]
+    [Route("api/[Controller]")]
     [ApiController]
     public class ParentPlatformsController : ControllerBase
     {
