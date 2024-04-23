@@ -28,7 +28,17 @@ namespace Web_API.Controllers
                     return BadRequest(ModelState);
 
                 var platforms = await _parentPfRepo.GetAllParentPlatforms();
-                return platforms == null ? NotFound() : Ok(_mapper.Map<List<PlatformDto>>(platforms));
+                if (platforms == null)
+                    return NotFound();
+
+                var platformDtos = _mapper.Map<List<PlatformDto>>(platforms);
+                var returnResults = new
+                {
+                    count = platformDtos.Count,
+                    next = "",
+                    results = platformDtos
+                };
+                return Ok(returnResults);
             }
             catch (Exception ex)
             {

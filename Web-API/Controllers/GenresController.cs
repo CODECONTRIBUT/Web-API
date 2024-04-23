@@ -30,7 +30,17 @@ namespace Web_API.Controllers
                     return BadRequest(ModelState);
 
                 var genres = await _genreRepo.GetAllGenreAsync();
-                return Ok(_mapper.Map<List<GenreDto>>(genres));
+                if (genres == null)
+                    return NotFound();
+
+                var genreDtos = _mapper.Map<List<GenreDto>>(genres);
+                var returnResults = new
+                {
+                    count = genreDtos.Count,
+                    next = "",
+                    results = genreDtos
+                };
+                return Ok(returnResults);
             }
             catch (Exception ex)
             {

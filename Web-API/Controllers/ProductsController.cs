@@ -35,7 +35,13 @@ namespace Web_API.Controllers
                     return NotFound();
                 
                 var productDtos = _mapper.Map<List<ProductDto>>(products);
-                return Ok(productDtos);
+                var returnResults = new
+                {
+                    count = productDtos.Count,
+                    next = "",
+                    results = productDtos
+                };
+                return Ok(returnResults);
             }
             catch (Exception ex)
             {
