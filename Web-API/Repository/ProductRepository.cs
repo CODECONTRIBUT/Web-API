@@ -39,16 +39,18 @@ namespace Web_API.Repository
             return existingProduct;
         }
 
-        public async Task<List<Product>> GetAllProductsAsync(QueryObject queryObj)
+        public async Task<(List<Product>? productList, int totalCount)> GetAllProductsAsync(QueryObject queryObj)
         {
             var products = _dbContext.Products.Include(p => p.Screenshots)
                                               .Include(p => p.Platforms).Include(p => p.ParentPlatforms).AsQueryable();
+
+            var skipNumber = (queryObj.page - 1) * queryObj.page_size;
 
             //if search string exists, get all products with search string only
             if (!string.IsNullOrEmpty(queryObj.search) && !string.IsNullOrWhiteSpace(queryObj.search))
             {
                 products = products.Where(p => p.Name.Contains(queryObj.search)).Distinct().OrderBy(p => p.Id);
-                return await products.ToListAsync();
+                return products == null ? (null, 0) : (await products.Skip(skipNumber).Take(queryObj.page_size).ToListAsync(), products.Count());
             }
 
             if (queryObj.genres != null)
@@ -93,9 +95,7 @@ namespace Web_API.Repository
                 }
             }
 
-            var skipNumber = (queryObj.page - 1) * queryObj.page_size;
-
-            return await products.Skip(skipNumber).Take(queryObj.page_size).ToListAsync();
+            return products == null ? (null, 0) : (await products.Skip(skipNumber).Take(queryObj.page_size).ToListAsync(), products.Count());
         }
 
         public async Task<Product?> GetProductByIdAsync(int id)

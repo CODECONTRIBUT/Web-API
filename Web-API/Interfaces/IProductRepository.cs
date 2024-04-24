@@ -7,7 +7,7 @@ namespace Web_API.Interfaces
 {
     public interface IProductRepository
     {
-        Task<List<Product>> GetAllProductsAsync(QueryObject queryObj);
+        Task<(List<Product>? productList, int totalCount)> GetAllProductsAsync(QueryObject queryObj);
 
         Task<Product?> GetProductByIdAsync(int id);
 

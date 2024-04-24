@@ -13,11 +13,12 @@ namespace Web_API.Repository
             _dbContext = dbContext;
         }
 
-        public async Task<List<Store>> GetAllStores(QueryStoreObject queryStoreObj)
+        public async Task<(List<Store>? storeList, int totalCount)> GetAllStores(QueryStoreObject queryStoreObj)
         {
             var skipNumber = (queryStoreObj.page - 1) * queryStoreObj.page_size;
+            var stores = _dbContext.Stores.OrderBy(s => s.Id);
 
-            return await _dbContext.Stores.Skip(skipNumber).Take(queryStoreObj.page_size).ToListAsync();
+            return (await stores.Skip(skipNumber).Take(queryStoreObj.page_size).ToListAsync(), stores.Count());
         }
 
         public async Task<Store?> GetStoreById(int Id)

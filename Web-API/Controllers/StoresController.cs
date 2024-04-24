@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Web_API.Dtos.Genre;
 using Web_API.Dtos.Store;
 using Web_API.Helpers;
 using Web_API.Interfaces;
+using Web_API.Models;
 
 namespace Web_API.Controllers
 {
@@ -28,8 +30,18 @@ namespace Web_API.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var stores = await _storeRepo.GetAllStores(queryStoreObj);
-                return stores == null ? NotFound() : Ok(_mapper.Map<List<StoreDto>>(stores));
+                var (stores, totalCount) = await _storeRepo.GetAllStores(queryStoreObj);
+                if (stores == null)
+                    return NotFound();
+
+                var storeDtos = _mapper.Map<List<StoreDto>>(stores);
+                var returnResults = new
+                {
+                    count = totalCount,
+                    next = queryStoreObj.page * queryStoreObj.page_size >= totalCount ? null : "https://localhost:7040/api/stores?page=" + (queryStoreObj.page + 1).ToString(),
+                    results = storeDtos
+                };
+                return Ok(returnResults);
             }
             catch (Exception ex)
             {

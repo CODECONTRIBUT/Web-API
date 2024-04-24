@@ -33,15 +33,15 @@ namespace Web_API.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var products = await _entityRepo.GetAllProductsAsync(queryObj);
-                if (products == null)
+                var (productList, totalCount) = await _entityRepo.GetAllProductsAsync(queryObj);         
+                if (productList == null)
                     return NotFound();
-                
-                var productDtos = _mapper.Map<List<ProductDto>>(products);
+
+                var productDtos = _mapper.Map<List<ProductDto>>(productList);
                 var returnResults = new
                 {
-                    count = productDtos.Count,
-                    next = "",
+                    count = totalCount,
+                    next = queryObj.page * queryObj.page_size >= totalCount ? null : "https://localhost:7040/api/products?page=" + (queryObj.page + 1).ToString(),
                     results = productDtos
                 };
                 return Ok(returnResults);
