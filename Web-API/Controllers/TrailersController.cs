@@ -28,7 +28,13 @@ namespace Web_API.Controllers
                     return BadRequest(ModelState);
 
                 var trailers = await _trailerRepo.GetAllTrailers(productId);
-                return trailers == null ? NotFound() : Ok(_mapper.Map<List<TrailerDto>>(trailers));
+                var result = new
+                {
+                    count = trailers.Count,
+                    next = "",
+                    results = _mapper.Map<List<TrailerDto>>(trailers)
+                };
+                return trailers == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
             {
