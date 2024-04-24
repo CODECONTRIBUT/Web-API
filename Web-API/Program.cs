@@ -59,3 +59,9 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+//Plans:
+//
+//Congrats. Yes!!!!!!  Integration is done successfully. Just need handle details.                          23/04/2024
+//Integration test has all done!! All pages run well. Would deploy whole end-to-end to AWS next.            24/04/2024
+//After that, add Post/Put/Delete on front-end.                                                             next phrase
