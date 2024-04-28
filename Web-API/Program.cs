@@ -24,7 +24,7 @@ builder.Services.AddCors(options =>
     //React app
     options.AddPolicy("ReactApp", policybuilder =>
     {
-        policybuilder.WithOrigins("http://localhost:5173");
+        policybuilder.WithOrigins("http://youto.azurewebsites.net");
         policybuilder.AllowAnyHeader();
         policybuilder.AllowAnyMethod();
         policybuilder.AllowCredentials();
