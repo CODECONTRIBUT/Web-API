@@ -38,7 +38,7 @@ namespace Web_API.Controllers
                 var returnResults = new
                 {
                     count = totalCount,
-                    next = queryObj.page * queryObj.page_size >= totalCount ? null : "https://localhost:7040/api/products?page=" + (queryObj.page + 1).ToString(),
+                    next = queryObj.page * queryObj.page_size >= totalCount ? null : "https://youtoapi.azurewebsites.net/api/products?page=" + (queryObj.page + 1).ToString(),
                     results = productDtos
                 };
                 return Ok(returnResults);
