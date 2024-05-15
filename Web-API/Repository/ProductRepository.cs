@@ -112,25 +112,25 @@ namespace Web_API.Repository
             if (existingProduct == null)
                 return null;
 
-            existingProduct.Platforms.Clear();
+            //existingProduct.Platforms.Clear();
             existingProduct.ParentPlatforms.Clear();
 
             existingProduct.Slug = updatedProductDto.Slug;
             existingProduct.Name = updatedProductDto.Name;
             existingProduct.MetaCritic = updatedProductDto.MetaCritic;
-            existingProduct.BackgroundImage = updatedProductDto.Background_Image;
-            existingProduct.StoreId = updatedProductDto.StoreId;
+            //existingProduct.BackgroundImage = updatedProductDto.Background_Image;
+            //existingProduct.StoreId = updatedProductDto.StoreId;
             existingProduct.GenreId = updatedProductDto.GenreId;
             existingProduct.Description = updatedProductDto.Description;
             existingProduct.RatingTop = updatedProductDto.Rating_Top;
-            existingProduct.TrailerId = updatedProductDto.TrailerId;
+            //existingProduct.TrailerId = updatedProductDto.TrailerId;
             existingProduct.ReleasedDatetime = updatedProductDto.ReleasedDatetime;
 
-            var updatedScreenshots = _mapper.Map<List<Screenshot>>(updatedProductDto.Screenshots);
-            if (!CheckSameScreenshotList(existingProduct.Screenshots.ToList(), updatedScreenshots))
-                existingProduct.Screenshots = updatedScreenshots;  
+            //var updatedScreenshots = _mapper.Map<List<Screenshot>>(updatedProductDto.Screenshots);
+            //if (!CheckSameScreenshotList(existingProduct.Screenshots.ToList(), updatedScreenshots))
+            //    existingProduct.Screenshots = updatedScreenshots;  
 
-            existingProduct.Platforms = GetPlatformsFromDb(_mapper.Map<List<Platform>>(updatedProductDto.Platforms));
+            //existingProduct.Platforms = GetPlatformsFromDb(_mapper.Map<List<Platform>>(updatedProductDto.Platforms));
             existingProduct.ParentPlatforms = GetPlatformsFromDb(_mapper.Map<List<Platform>>(updatedProductDto.ParentPlatforms));
 
             await _dbContext.SaveChangesAsync();

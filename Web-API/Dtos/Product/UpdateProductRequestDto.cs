@@ -12,7 +12,7 @@ namespace Web_API.Dtos.Product
         [Required]
         public string Name { get; set; } = string.Empty;
 
-        public string Background_Image { get; set; } = string.Empty;
+        //public string Background_Image { get; set; } = string.Empty;
 
         [Range(0, 100)]
         public int? MetaCritic { get; set; }
@@ -24,17 +24,17 @@ namespace Web_API.Dtos.Product
         [Required]
         public int GenreId { get; set; }
 
-        public int? StoreId { get; set; }
+        //public int? StoreId { get; set; }
 
-        public int? TrailerId { get; set; }
+        //public int? TrailerId { get; set; }
 
         public DateTime? ReleasedDatetime { get; set; }
 
-        public List<ScreenshotDto> Screenshots { get; set; }
+       // public List<ScreenshotDto> Screenshots { get; set; }
 
         public List<PlatformDto> ParentPlatforms { get; set; } = new List<PlatformDto>();
 
-        public List<PlatformDto> Platforms { get; set; } = new List<PlatformDto>();
+        //public List<PlatformDto> Platforms { get; set; } = new List<PlatformDto>();
 
     }
 }
